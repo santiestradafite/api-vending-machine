@@ -1,0 +1,54 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+parameters:
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    _instanceof:
+        Shared\Domain\Command\CommandHandler:
+            tags: [ 'vending-machine.command_handler' ]
+
+        Shared\Domain\Query\QueryHandler:
+            tags: [ 'vending-machine.query_handler' ]
+
+        Shared\Domain\Event\DomainEventSubscriber:
+            tags: [ 'vending-machine.domain_event_subscriber' ]
+
+    Api\:
+        resource: ../src/Api
+
+    Shared\:
+        resource: ../src/Shared
+
+    Api\Infrastructure\Ui\Http\Controller\:
+        resource: '../src/Api/Infrastructure/Ui/Http/Controller'
+        tags: [ 'controller.service_arguments' ]
+
+    Shared\Infrastructure\Event\InMemorySymfonyEventBus:
+        arguments: [ !tagged vending-machine.domain_event_subscriber ]
+        lazy: true
+
+    Shared\Infrastructure\Command\InMemorySymfonyCommandBus:
+        arguments: [ !tagged vending-machine.command_handler ]
+
+    Shared\Infrastructure\Query\InMemorySymfonyQueryBus:
+        arguments: [ !tagged vending-machine.query_handler ]
+
+    Shared\Infrastructure\ExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onException }
+
+
+
+
+
+
+
+

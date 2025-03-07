@@ -1,0 +1,15 @@
+services:
+  api-vending-machine:
+    build: api
+    volumes:
+      - ../code:/var/www/html/vending-machine
+  nginx-vending-machine:
+    image: nginx:latest
+    ports:
+      - "8008:80"
+    volumes:
+      - ../code:/var/www/html/vending-machine
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ../log:/var/log/vending-machine
+    links:
+      - api-vending-machine

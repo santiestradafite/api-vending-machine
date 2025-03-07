@@ -1,0 +1,8 @@
+api.setupVendingMachine:
+  path: /vending-machine/{vendingMachineId}
+  controller: 'Api\Infrastructure\Ui\Http\Controller\SetupVendingMachineController'
+  methods: [PUT]
+api.getVendingMachine:
+  path: /vending-machine/{vendingMachineId}
+  controller: 'Api\Infrastructure\Ui\Http\Controller\GetVendingMachineController'
+  methods: [GET]
