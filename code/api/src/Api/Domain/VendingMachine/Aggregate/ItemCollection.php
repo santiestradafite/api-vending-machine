@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Api\Domain\Aggregate;
+namespace Api\Domain\VendingMachine\Aggregate;
 
 use Shared\Common\TypedCollection;
 use Shared\Domain\StringValueObject;
@@ -21,5 +21,10 @@ final class ItemCollection extends TypedCollection
     public function filterByName(StringValueObject $name): self
     {
         return $this->filter(static fn (Item $item) => $item->name()->equalsTo($name));
+    }
+
+    public function filterVended(): self
+    {
+        return $this->filter(static fn (Item $item) => $item->isVended()->isTrue());
     }
 }

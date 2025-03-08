@@ -2,14 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Tests\Api\Domain\Aggregate;
+namespace Api\Domain\VendingMachine\Aggregate;
 
-use Api\Domain\Aggregate\Coin;
-use Api\Domain\Aggregate\CoinValue;
 use Assert\AssertionFailedException;
 use PHPUnit\Framework\TestCase;
-use Tests\Api\Infrastructure\VendingMachine\StubCoin;
-use Tests\Api\Infrastructure\VendingMachine\StubCoinId;
 
 final class CoinValueTest extends TestCase
 {

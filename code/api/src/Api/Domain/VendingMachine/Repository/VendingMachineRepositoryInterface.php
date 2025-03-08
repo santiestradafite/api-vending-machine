@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Api\Domain\Repository;
+namespace Api\Domain\VendingMachine\Repository;
 
-use Api\Domain\Aggregate\VendingMachine;
-use Api\Domain\Aggregate\VendingMachineId;
+use Api\Domain\VendingMachine\Aggregate\VendingMachine;
+use Api\Domain\VendingMachine\Aggregate\VendingMachineId;
 
 interface VendingMachineRepositoryInterface
 {

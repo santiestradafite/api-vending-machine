@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Api\Domain\Aggregate;
+namespace Api\Domain\VendingMachine\Aggregate;
 
 use Shared\Domain\Uuid;
 

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Api\Infrastructure\VendingMachine;
 
-use Api\Domain\Aggregate\Coin;
-use Api\Domain\Aggregate\CoinId;
-use Api\Domain\Aggregate\CoinValue;
+use Api\Domain\VendingMachine\Aggregate\Coin;
+use Api\Domain\VendingMachine\Aggregate\CoinId;
+use Api\Domain\VendingMachine\Aggregate\CoinValue;
 
 final class StubCoin
 {

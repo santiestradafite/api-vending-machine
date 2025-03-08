@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Api\Infrastructure\VendingMachine;
 
-use Api\Domain\Aggregate\ItemId;
+use Api\Domain\VendingMachine\Aggregate\ItemId;
 
 final class StubItemId
 {

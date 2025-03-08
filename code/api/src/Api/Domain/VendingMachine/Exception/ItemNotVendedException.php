@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Api\Domain\Exception;
+namespace Api\Domain\VendingMachine\Exception;
 
 use Shared\Common\Exception\Exception;
 use Shared\Domain\StringValueObject;

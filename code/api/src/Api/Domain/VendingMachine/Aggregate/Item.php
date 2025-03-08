@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Api\Domain\Aggregate;
+namespace Api\Domain\VendingMachine\Aggregate;
 
+use Api\Domain\VendingMachine\Exception\ItemNotVendedException;
 use DateTimeImmutable;
+use Shared\Domain\BoolValueObject;
 use Shared\Domain\Entity;
 use Shared\Domain\IntValueObject;
 use Shared\Domain\StringValueObject;
@@ -17,15 +19,21 @@ final class Item extends Entity
     private StringValueObject $name;
     private ItemPrice $price;
     private IntValueObject $stock;
+    private BoolValueObject $isVended;
     private DateTimeImmutable $createdAt;
 
-    private function __construct(ItemId $id, StringValueObject $name, ItemPrice $price, IntValueObject $stock)
-    {
+    private function __construct(
+        ItemId $id,
+        StringValueObject $name,
+        ItemPrice $price,
+        IntValueObject $stock
+    ) {
         parent::__construct($id);
 
         $this->name = $name;
         $this->price = $price;
         $this->stock = $stock;
+        $this->isVended = BoolValueObject::false();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -53,16 +61,29 @@ final class Item extends Entity
         return $this->stock;
     }
 
+    public function isVended(): BoolValueObject
+    {
+        return $this->isVended;
+    }
+
     public function update(ItemPrice $price, IntValueObject $stock): void
     {
         $this->price = $price;
         $this->stock = $stock;
     }
 
-    public function reduceStock(): void
+    public function vend(): void
     {
-        if ($this->stock->isGreaterThanZero()) {
-            $this->stock = $this->stock->decrease();
+        if (!$this->stock()->isGreaterThanZero()) {
+            throw ItemNotVendedException::becauseItemHasNoStock($this->name);
         }
+
+        $this->stock = $this->stock->decrease();
+        $this->isVended = BoolValueObject::true();
+    }
+
+    public function collect(): void
+    {
+        $this->isVended = BoolValueObject::false();
     }
 }

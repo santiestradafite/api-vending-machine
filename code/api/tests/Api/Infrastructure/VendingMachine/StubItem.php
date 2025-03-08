@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Api\Infrastructure\VendingMachine;
 
-use Api\Domain\Aggregate\Item;
-use Api\Domain\Aggregate\ItemId;
-use Api\Domain\Aggregate\ItemPrice;
+use Api\Domain\VendingMachine\Aggregate\Item;
+use Api\Domain\VendingMachine\Aggregate\ItemId;
+use Api\Domain\VendingMachine\Aggregate\ItemPrice;
+use Shared\Domain\BoolValueObject;
 use Shared\Domain\IntValueObject;
 use Shared\Domain\StringValueObject;
 
