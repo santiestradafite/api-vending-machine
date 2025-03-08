@@ -16,6 +16,7 @@ use Shared\Domain\StringValueObject;
  */
 final class Item extends Entity
 {
+    private VendingMachine $vendingMachine;
     private StringValueObject $name;
     private ItemPrice $price;
     private IntValueObject $stock;
@@ -46,6 +47,11 @@ final class Item extends Entity
         return new self($id, $name, $price, $stock);
     }
 
+    public function vendingMachine(): VendingMachine
+    {
+        return $this->vendingMachine;
+    }
+
     public function name(): StringValueObject
     {
         return $this->name;
@@ -64,6 +70,11 @@ final class Item extends Entity
     public function isVended(): BoolValueObject
     {
         return $this->isVended;
+    }
+
+    public function setVendingMachine(VendingMachine $vendingMachine): void
+    {
+        $this->vendingMachine = $vendingMachine;
     }
 
     public function update(ItemPrice $price, IntValueObject $stock): void

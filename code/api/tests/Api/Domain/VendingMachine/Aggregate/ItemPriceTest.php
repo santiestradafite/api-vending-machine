@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Api\Domain\VendingMachine\Aggregate;
+namespace Tests\Api\Domain\VendingMachine\Aggregate;
 
+use Api\Domain\VendingMachine\Aggregate\ItemPrice;
 use Assert\AssertionFailedException;
 use PHPUnit\Framework\TestCase;
 
@@ -37,6 +38,6 @@ final class ItemPriceTest extends TestCase
     {
         $this->expectException(AssertionFailedException::class);
 
-        CoinValue::create(1.72);
+        ItemPrice::create(1.72);
     }
 }

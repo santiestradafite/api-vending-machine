@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Api\Domain\VendingMachine\Aggregate;
+namespace Tests\Api\Domain\VendingMachine\Aggregate;
 
+use Api\Domain\VendingMachine\Aggregate\Item;
+use Api\Domain\VendingMachine\Aggregate\ItemPrice;
 use Api\Domain\VendingMachine\Exception\ItemNotVendedException;
 use PHPUnit\Framework\TestCase;
 use Shared\Domain\IntValueObject;

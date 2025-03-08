@@ -8,7 +8,6 @@ use Api\Domain\VendingMachine\Event\VendingMachineCreatedEvent;
 use Api\Domain\VendingMachine\Exception\ItemNotVendedException;
 use Closure;
 use Shared\Domain\AggregateRoot;
-use Shared\Domain\BoolValueObject;
 use Shared\Domain\FloatValueObject;
 use Shared\Domain\IntValueObject;
 use Shared\Domain\StringValueObject;
@@ -25,8 +24,8 @@ class VendingMachine extends AggregateRoot
     {
         parent::__construct($id);
 
-        $this->items = $items;
-        $this->coins = $coins;
+        $this->setItems($items);
+        $this->setCoins($coins);
 
         $this->record(VendingMachineCreatedEvent::create($id, $items, $coins));
     }
@@ -34,6 +33,20 @@ class VendingMachine extends AggregateRoot
     public static function create(VendingMachineId $id, ItemCollection $items, CoinCollection $coins): self
     {
         return new self($id, $items, $coins);
+    }
+
+    private function setItems(ItemCollection $items): void
+    {
+        $items->each(fn (Item $item) => $item->setVendingMachine($this));
+
+        $this->items = $items;
+    }
+
+    private function setCoins(CoinCollection $coins): void
+    {
+        $coins->each(fn (Coin $coin) => $coin->setVendingMachine($this));
+
+        $this->coins = $coins;
     }
 
     public function items(): ItemCollection
@@ -46,20 +59,34 @@ class VendingMachine extends AggregateRoot
         return $this->coins;
     }
 
-    public function addItem(StringValueObject $name, ItemPrice $price, IntValueObject $stock): void
+    public function insertItem(StringValueObject $name, ItemPrice $price, IntValueObject $stock): void
     {
         $itemsByName = $this->items->filterByName($name);
 
         if ($itemsByName->isEmpty()) {
-            $this->items->add(Item::create(ItemId::generate(), $name, $price, $stock, BoolValueObject::false()));
+            $this->addItem(Item::create(ItemId::generate(), $name, $price, $stock));
         } else {
             $itemsByName->firstOrFail()->update($price, $stock);
         }
     }
 
+    private function addItem(Item $item): void
+    {
+        $item->setVendingMachine($this);
+
+        $this->items->add($item);
+    }
+
     public function insertCoin(Coin $coin): void
     {
         $coin->insert();
+        $this->addCoin($coin);
+    }
+
+    private function addCoin(Coin $coin): void
+    {
+        $coin->setVendingMachine($this);
+
         $this->coins->add($coin);
     }
 

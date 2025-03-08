@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Api\Domain\VendingMachine\Aggregate;
+namespace Tests\Api\Domain\VendingMachine\Aggregate;
 
+use Api\Domain\VendingMachine\Aggregate\CoinValue;
 use Assert\AssertionFailedException;
 use PHPUnit\Framework\TestCase;
 

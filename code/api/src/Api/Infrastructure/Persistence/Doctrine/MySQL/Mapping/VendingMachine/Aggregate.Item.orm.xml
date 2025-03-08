@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+    https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="Api\Domain\VendingMachine\Aggregate\Item" table="vending_machine_item">
+        <id name="id" type="item_id" />
+
+        <field name="name" type="string_value_object" length="25" />
+        <field name="stock" type="int_value_object" />
+        <field name="isVended" type="bool_value_object" />
+        <field name="createdAt" type="datetime_immutable" />
+
+        <embedded name="price" class="Api\Domain\VendingMachine\Aggregate\ItemPrice" use-column-prefix="false" />
+
+        <many-to-one field="vendingMachine" target-entity="Api\Domain\VendingMachine\Aggregate\VendingMachine" inversed-by="items">
+            <join-column name="vending_machine_id" nullable="false" />
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

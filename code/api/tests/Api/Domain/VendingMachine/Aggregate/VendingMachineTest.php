@@ -2,12 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Api\Domain\VendingMachine\Aggregate;
+namespace Tests\Api\Domain\VendingMachine\Aggregate;
 
+use Api\Domain\VendingMachine\Aggregate\CoinCollection;
+use Api\Domain\VendingMachine\Aggregate\CoinValue;
+use Api\Domain\VendingMachine\Aggregate\ItemCollection;
+use Api\Domain\VendingMachine\Aggregate\ItemPrice;
+use Api\Domain\VendingMachine\Aggregate\VendingMachine;
 use Api\Domain\VendingMachine\Event\VendingMachineCreatedEvent;
 use Api\Domain\VendingMachine\Exception\ItemNotVendedException;
 use PHPUnit\Framework\TestCase;
-use Shared\Domain\FloatValueObject;
 use Shared\Domain\IntValueObject;
 use Shared\Domain\StringValueObject;
 use Tests\Api\Infrastructure\VendingMachine\StubCoin;
@@ -49,13 +53,14 @@ final class VendingMachineTest extends TestCase
         $price = ItemPrice::create(StubItem::DEFAULT_PRICE);
         $stock = new IntValueObject(StubItem::DEFAULT_STOCK);
 
-        $sut->addItem($name, $price, $stock);
+        $sut->insertItem($name, $price, $stock);
 
         self::assertCount(1, $sut->items());
         $itemAdded = $sut->items()->firstOrFail();
         self::assertEquals($name, $itemAdded->name());
         self::assertEquals($price, $itemAdded->price());
         self::assertEquals($stock, $itemAdded->stock());
+        self::assertEquals($sut, $itemAdded->vendingMachine());
     }
 
     public function test_it_can_update_an_existing_item(): void
@@ -65,23 +70,26 @@ final class VendingMachineTest extends TestCase
         $price = ItemPrice::create(0.25);
         $stock = new IntValueObject(1);
 
-        $sut->addItem($name, $price, $stock);
+        $sut->insertItem($name, $price, $stock);
 
         self::assertCount(1, $sut->items());
         $itemAdded = $sut->items()->firstOrFail();
         self::assertEquals($name, $itemAdded->name());
         self::assertEquals($price, $itemAdded->price());
         self::assertEquals($stock, $itemAdded->stock());
+        self::assertEquals($sut, $itemAdded->vendingMachine());
     }
 
     public function test_it_can_insert_a_coin(): void
     {
         $sut = StubVendingMachine::create(coins: CoinCollection::create([StubCoin::create()]));
-        $sut->insertCoin(StubCoin::createRandomWithValue(CoinValue::create(0.25)));
+        $coin = StubCoin::createRandomWithValue(CoinValue::create(0.25));
+        $sut->insertCoin($coin);
 
         self::assertCount(1, $sut->insertedCoins());
         self::assertCount(2, $sut->coins());
         self::assertEmpty($sut->returnedCoins());
+        self::assertEquals($sut, $coin->vendingMachine());
     }
 
     public function test_it_can_return_inserted_coins(): void

@@ -31,5 +31,7 @@ install:
 	$(COMPOSE) build
 	$(COMPOSE) up -d
 	$(COMPOSE) exec api-vending-machine composer install
+init-db:
+	$(COMPOSE) exec api-vending-machine bin/console doctrine:schema:create
 test-unit:
 	$(COMPOSE) exec api-vending-machine bin/phpunit -d memory_limit=256M ${parameters}

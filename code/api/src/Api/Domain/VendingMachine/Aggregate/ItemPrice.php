@@ -43,16 +43,12 @@ final class ItemPrice extends FloatValueObject
 
     private function canBeSumOfAllowedValues(float $value): bool
     {
-        if ($value === 0.0) {
-            return true;
-        }
-
         foreach (self::ALLOWED_COIN_VALUES as $allowedValue) {
-            if ($value >= $allowedValue && $this->canBeSumOfAllowedValues(round($value - $allowedValue, 2))) {
-                return true;
+            while ($value >= $allowedValue) {
+                $value = round($value - $allowedValue, 2);
             }
         }
 
-        return false;
+        return $value === 0.0;
     }
 }

@@ -1,0 +1,24 @@
+doctrine:
+    dbal:
+        url: '%env(resolve:DATABASE_URL)%'
+        driver: 'pdo_mysql'
+        types:
+            uuid_binary: Shared\Infrastructure\Persistence\Doctrine\MySQL\Type\DoctrineUuidType
+            string_value_object: Shared\Infrastructure\Persistence\Doctrine\MySQL\Type\DoctrineStringValueObjectType
+            int_value_object: Shared\Infrastructure\Persistence\Doctrine\MySQL\Type\DoctrineIntValueObjectType
+            float_value_object: Shared\Infrastructure\Persistence\Doctrine\MySQL\Type\DoctrineFloatValueObjectType
+            bool_value_object: Shared\Infrastructure\Persistence\Doctrine\MySQL\Type\DoctrineBoolValueObjectType
+
+            vending_machine_id: Api\Infrastructure\Persistence\Doctrine\MySQL\Type\DoctrineVendingMachineIdType
+            item_id: Api\Infrastructure\Persistence\Doctrine\MySQL\Type\DoctrineItemIdType
+            coin_id: Api\Infrastructure\Persistence\Doctrine\MySQL\Type\DoctrineCoinIdType
+
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        mappings:
+            VendingMachine:
+                is_bundle: false
+                type: xml
+                dir: '%kernel.project_dir%/src/Api/Infrastructure/Persistence/Doctrine/MySQL/Mapping/VendingMachine'
+                prefix: 'Api\Domain\VendingMachine'

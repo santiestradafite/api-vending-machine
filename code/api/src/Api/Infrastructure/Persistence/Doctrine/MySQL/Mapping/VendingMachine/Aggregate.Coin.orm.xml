@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+    https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="Api\Domain\VendingMachine\Aggregate\Coin" table="vending_machine_coin">
+        <id name="id" type="coin_id" />
+
+        <field name="isInserted" type="bool_value_object" />
+        <field name="isReturned" type="bool_value_object" />
+
+        <embedded name="value" class="Api\Domain\VendingMachine\Aggregate\CoinValue" use-column-prefix="false" />
+
+        <many-to-one field="vendingMachine" target-entity="Api\Domain\VendingMachine\Aggregate\VendingMachine" inversed-by="coins">
+            <join-column name="vending_machine_id" nullable="false" />
+        </many-to-one>
+    </entity>
+</doctrine-mapping>

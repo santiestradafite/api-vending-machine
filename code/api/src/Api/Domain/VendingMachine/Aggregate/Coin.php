@@ -12,6 +12,7 @@ use Shared\Domain\Entity;
  */
 final class Coin extends Entity
 {
+    private VendingMachine $vendingMachine;
     private CoinValue $value;
     private BoolValueObject $isInserted;
     private BoolValueObject $isReturned;
@@ -32,6 +33,11 @@ final class Coin extends Entity
         return new self($id, $value);
     }
 
+    public function vendingMachine(): VendingMachine
+    {
+        return $this->vendingMachine;
+    }
+
     public function value(): CoinValue
     {
         return $this->value;
@@ -45,6 +51,11 @@ final class Coin extends Entity
     public function isReturned(): BoolValueObject
     {
         return $this->isReturned;
+    }
+
+    public function setVendingMachine(VendingMachine $vendingMachine): void
+    {
+        $this->vendingMachine = $vendingMachine;
     }
 
     public function insert(): void

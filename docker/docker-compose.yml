@@ -3,6 +3,8 @@ services:
     build: api
     volumes:
       - ../code:/var/www/html/vending-machine
+    links:
+      - db-vending-machine
   nginx-vending-machine:
     image: nginx:latest
     ports:
@@ -13,3 +15,13 @@ services:
       - ../log:/var/log/vending-machine
     links:
       - api-vending-machine
+  db-vending-machine:
+    image: library/mysql:latest
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=vending_machine
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=1234
