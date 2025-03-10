@@ -12,17 +12,17 @@ class FloatValueObject
 
     public function value(): float
     {
-        return $this->value;
+        return round($this->value, 2);
     }
 
     public function add(FloatValueObject $other): FloatValueObject
     {
-        return new static(round($this->value + $other->value(), 2));
+        return new static($this->value() + $other->value());
     }
 
     public function subtract(FloatValueObject $other): FloatValueObject
     {
-        return new static(round($this->value - $other->value(), 2));
+        return new static($this->value() - $other->value());
     }
 
     public function isGreaterThan(FloatValueObject $other): bool

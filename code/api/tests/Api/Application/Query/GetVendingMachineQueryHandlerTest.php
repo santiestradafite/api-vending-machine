@@ -48,6 +48,18 @@ final class GetVendingMachineQueryHandlerTest extends TestCase
             [
                 'vendingMachine' => [
                     'id' => StubVendingMachineId::DEFAULT_ID,
+                    'vended_item' => [
+                        'id' => StubItemId::DEFAULT_ID,
+                        'name' => StubItem::DEFAULT_NAME,
+                        'price' => 0.05,
+                        'stock' => 9
+                    ],
+                    'returned_coins' => [
+                        [
+                            'id' => StubCoinId::DEFAULT_ID,
+                            'value' => 0.05
+                        ]
+                    ],
                     'items' => [
                         [
                             'id' => StubItemId::DEFAULT_ID,

@@ -19,11 +19,6 @@ final class ItemCollection extends TypedCollection
         return Item::class;
     }
 
-    public function filterByName(StringValueObject $name): self
-    {
-        return $this->filter(static fn (Item $item) => $item->name()->equalsTo($name));
-    }
-
     public function filterVended(): self
     {
         return $this->filter(static fn (Item $item) => $item->isVended()->isTrue());

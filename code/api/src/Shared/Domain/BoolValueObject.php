@@ -41,6 +41,11 @@ final class BoolValueObject
         return $this->value === true;
     }
 
+    public function isFalse(): bool
+    {
+        return $this->value === false;
+    }
+
     public function toNumber(): int
     {
         return $this->value ? self::NUMBER_TRUE : self::NUMBER_FALSE;

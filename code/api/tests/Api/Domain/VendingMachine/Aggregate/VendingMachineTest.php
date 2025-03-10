@@ -12,6 +12,7 @@ use Api\Domain\VendingMachine\Aggregate\VendingMachine;
 use Api\Domain\VendingMachine\Event\VendingMachineCreatedEvent;
 use Api\Domain\VendingMachine\Exception\ItemNotVendedException;
 use PHPUnit\Framework\TestCase;
+use Shared\Domain\FloatValueObject;
 use Shared\Domain\IntValueObject;
 use Shared\Domain\StringValueObject;
 use Tests\Api\Infrastructure\VendingMachine\StubCoin;
@@ -123,6 +124,19 @@ final class VendingMachineTest extends TestCase
         self::assertCount(5, $sut->coins());
     }
 
+    public function test_it_should_fail_when_trying_to_vend_an_item_without_collecting_the_already_vended_one(): void
+    {
+        $sut = StubVendingMachine::create(
+            items: ItemCollection::create([StubItem::create(price: ItemPrice::create(0.1))])
+        );
+        $sut->insertCoin(StubCoin::createRandomWithValue(CoinValue::create(0.1)));
+        $sut->vendItem(StubItemId::create());
+
+        $this->expectExceptionObject(ItemNotVendedException::becauseVendedItemIsNotCollected());
+
+        $sut->vendItem(StubItemId::create());
+    }
+
     public function test_it_should_fail_when_trying_to_vend_a_non_existing_item(): void
     {
         $sut = StubVendingMachine::create(items: ItemCollection::create([StubItem::create()]));
@@ -136,7 +150,22 @@ final class VendingMachineTest extends TestCase
     {
         $sut = StubVendingMachine::create(items: ItemCollection::create([StubItem::create()]));
 
-        $this->expectExceptionObject(ItemNotVendedException::becauseInsertedMoneyIsNotEnough(StubItemId::create()));
+        $this->expectExceptionObject(
+            ItemNotVendedException::becauseInsertedMoneyIsNotEnough(StubItem::create(), new FloatValueObject(0))
+        );
+
+        $sut->vendItem(StubItemId::create());
+    }
+
+    public function test_it_should_fail_when_the_machine_has_no_change(): void
+    {
+        $sut = StubVendingMachine::create(
+            items: ItemCollection::create([StubItem::create()]),
+            coins: CoinCollection::create([StubCoin::create()])
+        );
+        $sut->insertCoin(StubCoin::createRandomWithValue(CoinValue::create(1)));
+
+        $this->expectExceptionObject(ItemNotVendedException::becauseTheMachineHasNoChange(StubItemId::create()));
 
         $sut->vendItem(StubItemId::create());
     }

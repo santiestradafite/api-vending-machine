@@ -17,11 +17,39 @@ final class GetVendingMachineQueryResponseConverter
             [
                 'vendingMachine' => [
                     'id' => $vendingMachine->id()->value(),
+                    'vended_item' => $this->convertVendedItem($vendingMachine->vendedItem()),
+                    'returned_coins' => $vendingMachine->returnedCoins()->reduce($this->convertReturnedCoin(), []),
                     'items' => $vendingMachine->items()->reduce($this->convertItem(), []),
                     'coins' => $vendingMachine->coins()->reduce($this->convertCoin(), [])
                 ]
             ]
         );
+    }
+
+    private function convertVendedItem(?Item $item): ?array
+    {
+        if (null === $item) {
+            return null;
+        }
+
+        return [
+            'id' => $item->id()->value(),
+            'name' => $item->name()->value(),
+            'price' => $item->price()->value(),
+            'stock' => $item->stock()->value()
+        ];
+    }
+
+    private function convertReturnedCoin(): Closure
+    {
+        return static function (array $carry, Coin $coin) {
+            $carry[] = [
+                'id' => $coin->id()->value(),
+                'value' => $coin->value()->value()
+            ];
+
+            return $carry;
+        };
     }
 
     private function convertItem(): Closure

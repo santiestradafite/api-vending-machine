@@ -2,6 +2,18 @@ api.setupVendingMachine:
   path: /vending-machine/{vendingMachineId}
   controller: 'Api\Infrastructure\Ui\Http\Controller\SetupVendingMachineController'
   methods: [PUT]
+api.insertCoin:
+  path: /vending-machine/{vendingMachineId}/insert-coin
+  controller: 'Api\Infrastructure\Ui\Http\Controller\InsertCoinController'
+  methods: [PUT]
+api.returnInsertedCoins:
+  path: /vending-machine/{vendingMachineId}/return-inserted-coins
+  controller: 'Api\Infrastructure\Ui\Http\Controller\ReturnInsertedCoinsController'
+  methods: [POST]
+api.vendItem:
+  path: /vending-machine/{vendingMachineId}/vend-item
+  controller: 'Api\Infrastructure\Ui\Http\Controller\VendItemController'
+  methods: [POST]
 api.getVendingMachine:
   path: /vending-machine/{vendingMachineId}
   controller: 'Api\Infrastructure\Ui\Http\Controller\GetVendingMachineController'

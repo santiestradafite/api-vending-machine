@@ -87,14 +87,7 @@ class VendingMachine extends AggregateRoot
     {
         $item = $this->items()->get($itemId->value());
 
-        if (null === $item) {
-            throw ItemNotVendedException::becauseItemIsNotFound($itemId);
-        }
-
-        if ($item->price()->isGreaterThan($this->insertedMoney())) {
-            throw ItemNotVendedException::becauseInsertedMoneyIsNotEnough($itemId);
-        }
-
+        $this->assertItemCanBeVended($item, $itemId);
         $item->vend();
         $this->returnChange($item);
         $this->collectInsertedCoins();
@@ -107,7 +100,7 @@ class VendingMachine extends AggregateRoot
 
     public function insertedCoins(): CoinCollection
     {
-        return $this->coins->filterInserted();
+        return $this->coins()->filterInserted();
     }
 
     private function returnChange(Item $item): void
@@ -118,7 +111,7 @@ class VendingMachine extends AggregateRoot
             return;
         }
 
-        $this->coins->sortByValue()->each($this->calculateChangeFn($neededChange));
+        $this->coins()->sortByValue()->each($this->calculateChangeFn($neededChange));
 
         if ($neededChange->isGreaterThanZero()) {
             throw ItemNotVendedException::becauseTheMachineHasNoChange($item->id());
@@ -136,7 +129,7 @@ class VendingMachine extends AggregateRoot
     private function calculateChangeFn(FloatValueObject &$neededChange): Closure
     {
         return static function (Coin $coin) use (&$neededChange) {
-            while ($neededChange->isGreaterThanOrEqualsTo($coin->value())) {
+            while ($neededChange->isGreaterThanOrEqualsTo($coin->value()) && $coin->isReturned()->isFalse()) {
                 $neededChange = $neededChange->subtract($coin->value());
                 $coin->return();
             }
@@ -156,11 +149,26 @@ class VendingMachine extends AggregateRoot
 
     public function vendedItem(): ?Item
     {
-        return $this->items->filterVended()->first() ?: null;
+        return $this->items()->filterVended()->first() ?: null;
     }
 
     public function returnedCoins(): CoinCollection
     {
-        return $this->coins->filterReturned();
+        return $this->coins()->filterReturned();
+    }
+
+    private function assertItemCanBeVended(?Item $item, ItemId $itemId): void
+    {
+        if (null !== $this->vendedItem()) {
+            throw ItemNotVendedException::becauseVendedItemIsNotCollected();
+        }
+
+        if (null === $item) {
+            throw ItemNotVendedException::becauseItemIsNotFound($itemId);
+        }
+
+        if ($item->price()->isGreaterThan($this->insertedMoney())) {
+            throw ItemNotVendedException::becauseInsertedMoneyIsNotEnough($item, $this->insertedMoney());
+        }
     }
 }
