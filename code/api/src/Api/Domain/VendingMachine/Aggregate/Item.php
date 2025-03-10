@@ -77,16 +77,10 @@ final class Item extends Entity
         $this->vendingMachine = $vendingMachine;
     }
 
-    public function update(ItemPrice $price, IntValueObject $stock): void
-    {
-        $this->price = $price;
-        $this->stock = $stock;
-    }
-
     public function vend(): void
     {
         if (!$this->stock()->isGreaterThanZero()) {
-            throw ItemNotVendedException::becauseItemHasNoStock($this->name);
+            throw ItemNotVendedException::becauseItemHasNoStock($this->id());
         }
 
         $this->stock = $this->stock->decrease();

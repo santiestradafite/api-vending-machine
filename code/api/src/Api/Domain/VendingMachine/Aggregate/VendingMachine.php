@@ -76,19 +76,6 @@ class VendingMachine extends AggregateRoot
         return CoinCollection::cloneIndexed($this->coins);
     }
 
-    public function addItem(StringValueObject $name, ItemPrice $price, IntValueObject $stock): void
-    {
-        $itemsByName = $this->items->filterByName($name);
-
-        if ($itemsByName->isEmpty()) {
-            $item = Item::create(ItemId::generate(), $name, $price, $stock);
-            $item->setVendingMachine($this);
-            $this->items->add($item);
-        } else {
-            $itemsByName->firstOrFail()->update($price, $stock);
-        }
-    }
-
     public function insertCoin(Coin $coin): void
     {
         $coin->insert();
@@ -96,16 +83,16 @@ class VendingMachine extends AggregateRoot
         $this->coins->add($coin);
     }
 
-    public function vendItem(StringValueObject $itemName): void
+    public function vendItem(ItemId $itemId): void
     {
-        $itemsByName = $this->items->filterByName($itemName);
-        if ($itemsByName->isEmpty()) {
-            throw ItemNotVendedException::becauseItemIsNotFound($itemName);
+        $item = $this->items()->get($itemId->value());
+
+        if (null === $item) {
+            throw ItemNotVendedException::becauseItemIsNotFound($itemId);
         }
 
-        $item = $itemsByName->firstOrFail();
         if ($item->price()->isGreaterThan($this->insertedMoney())) {
-            throw ItemNotVendedException::becauseInsertedMoneyIsNotEnough($itemName);
+            throw ItemNotVendedException::becauseInsertedMoneyIsNotEnough($itemId);
         }
 
         $item->vend();
@@ -134,7 +121,7 @@ class VendingMachine extends AggregateRoot
         $this->coins->sortByValue()->each($this->calculateChangeFn($neededChange));
 
         if ($neededChange->isGreaterThanZero()) {
-            throw ItemNotVendedException::becauseTheMachineHasNoChange($item->name());
+            throw ItemNotVendedException::becauseTheMachineHasNoChange($item->id());
         }
     }
 
@@ -161,7 +148,7 @@ class VendingMachine extends AggregateRoot
         $this->insertedCoins()->each(fn (Coin $coin) => $coin->return());
     }
 
-    public function collectVendedItemAndChange(): void
+    public function collectVendedItemAndReturnedCoins(): void
     {
         $this->vendedItem()?->collect();
         $this->returnedCoins()->each(fn (Coin $coin) => $this->coins->removeElement($coin));

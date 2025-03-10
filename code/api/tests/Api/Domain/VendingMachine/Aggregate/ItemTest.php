@@ -31,18 +31,6 @@ final class ItemTest extends TestCase
         self::assertFalse($sut->isVended()->value());
     }
 
-    public function test_it_can_update_an_item_price_and_stock(): void
-    {
-        $newPrice = ItemPrice::create(0.10);
-        $newStock = new IntValueObject(5);
-
-        $sut = StubItem::create();
-        $sut->update($newPrice, $newStock);
-
-        self::assertEquals($newPrice, $sut->price());
-        self::assertEquals($newStock, $sut->stock());
-    }
-
     public function test_it_can_vend_an_item(): void
     {
         $sut = StubItem::create();
@@ -56,7 +44,7 @@ final class ItemTest extends TestCase
     {
         $sut = StubItem::create(stock: new IntValueObject(0));
 
-        $this->expectExceptionObject(ItemNotVendedException::becauseItemHasNoStock($sut->name()));
+        $this->expectExceptionObject(ItemNotVendedException::becauseItemHasNoStock($sut->id()));
 
         $sut->vend();
     }

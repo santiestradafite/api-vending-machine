@@ -8,7 +8,7 @@ use Throwable;
 
 abstract class Exception extends \Exception
 {
-    public static function create(string $message, Throwable $previous = null): self
+    public static function create(string $message, Throwable $previous = null)
     {
         return new static($message, 0, $previous);
     }

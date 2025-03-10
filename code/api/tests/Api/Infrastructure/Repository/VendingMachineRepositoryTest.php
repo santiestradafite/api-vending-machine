@@ -43,7 +43,7 @@ final class VendingMachineRepositoryTest extends RepositoryTestCase
 
         $vendingMachine = StubVendingMachine::create(items: $items, coins: $coins);
         $vendingMachine->insertCoin(StubCoin::create(StubCoinId::createOther(), CoinValue::create(0.10)));
-        $vendingMachine->vendItem(new StringValueObject(StubItem::DEFAULT_NAME));
+        $vendingMachine->vendItem(StubItemId::create());
 
         $this->repository->save($vendingMachine);
 
