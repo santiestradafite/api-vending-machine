@@ -1,0 +1,148 @@
+{
+	"info": {
+		"_postman_id": "15e79cca-5c2e-4d06-a768-22e168a2a780",
+		"name": "Vending machine",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42865163"
+	},
+	"item": [
+		{
+			"name": "Setup vending machine",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://api.vending-machine.local:8008/vending-machine/{{vendingMachineId}}",
+					"protocol": "http",
+					"host": [
+						"api",
+						"vending-machine",
+						"local"
+					],
+					"port": "8008",
+					"path": [
+						"vending-machine",
+						"{{vendingMachineId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Insert coin",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"coin_value\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://api.vending-machine.local:8008/vending-machine/{{vendingMachineId}}/insert-coin",
+					"protocol": "http",
+					"host": [
+						"api",
+						"vending-machine",
+						"local"
+					],
+					"port": "8008",
+					"path": [
+						"vending-machine",
+						"{{vendingMachineId}}",
+						"insert-coin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Return inserted coins",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://api.vending-machine.local:8008/vending-machine/{{vendingMachineId}}/return-inserted-coins",
+					"protocol": "http",
+					"host": [
+						"api",
+						"vending-machine",
+						"local"
+					],
+					"port": "8008",
+					"path": [
+						"vending-machine",
+						"{{vendingMachineId}}",
+						"return-inserted-coins"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Vend item",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"item_id\": \"e572fa64-af9d-489b-a42f-6eada195932c\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://api.vending-machine.local:8008/vending-machine/{{vendingMachineId}}/vend-item",
+					"protocol": "http",
+					"host": [
+						"api",
+						"vending-machine",
+						"local"
+					],
+					"port": "8008",
+					"path": [
+						"vending-machine",
+						"{{vendingMachineId}}",
+						"vend-item"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get vending machine",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://api.vending-machine.local:8008/vending-machine/{{vendingMachineId}}",
+					"protocol": "http",
+					"host": [
+						"api",
+						"vending-machine",
+						"local"
+					],
+					"port": "8008",
+					"path": [
+						"vending-machine",
+						"{{vendingMachineId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "vendingMachineId",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
