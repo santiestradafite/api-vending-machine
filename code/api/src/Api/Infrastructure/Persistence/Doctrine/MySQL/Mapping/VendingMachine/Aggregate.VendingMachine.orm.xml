@@ -8,14 +8,16 @@
     <entity name="Api\Domain\VendingMachine\Aggregate\VendingMachine" table="vending_machine">
         <id name="id" type="vending_machine_id" />
 
-        <one-to-many field="items" target-entity="Api\Domain\VendingMachine\Aggregate\Item" mapped-by="vendingMachine" fetch="EAGER" orphan-removal="true">
+        <field name="name" type="string_value_object" length="25" />
+
+        <one-to-many field="items" target-entity="Api\Domain\VendingMachine\Aggregate\Item" mapped-by="vendingMachine" orphan-removal="true">
             <cascade>
                 <cascade-persist />
                 <cascade-remove />
             </cascade>
         </one-to-many>
 
-        <one-to-many field="coins" target-entity="Api\Domain\VendingMachine\Aggregate\Coin" mapped-by="vendingMachine" fetch="EAGER" orphan-removal="true">
+        <one-to-many field="coins" target-entity="Api\Domain\VendingMachine\Aggregate\Coin" mapped-by="vendingMachine" orphan-removal="true">
             <cascade>
                 <cascade-persist />
                 <cascade-remove />

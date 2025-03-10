@@ -6,6 +6,9 @@ namespace Shared\Domain;
 
 final class BoolValueObject
 {
+    private const NUMBER_FALSE = 0;
+    private const NUMBER_TRUE  = 1;
+
     protected bool $value;
 
     public function __construct(bool $value)
@@ -38,8 +41,8 @@ final class BoolValueObject
         return $this->value === true;
     }
 
-    public function isFalse(): bool
+    public function toNumber(): int
     {
-        return $this->value === false;
+        return $this->value ? self::NUMBER_TRUE : self::NUMBER_FALSE;
     }
 }

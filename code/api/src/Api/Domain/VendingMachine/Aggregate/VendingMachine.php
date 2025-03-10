@@ -17,22 +17,34 @@ use Shared\Domain\StringValueObject;
  */
 class VendingMachine extends AggregateRoot
 {
-    private ItemCollection $items;
-    private CoinCollection $coins;
+    private StringValueObject $name;
+    /** @var ItemCollection $items */
+    private $items;
+    /** @var CoinCollection $coins */
+    private $coins;
 
-    private function __construct(VendingMachineId $id, ItemCollection $items, CoinCollection $coins)
-    {
+    private function __construct(
+        VendingMachineId $id,
+        StringValueObject $name,
+        ItemCollection $items,
+        CoinCollection $coins
+    ) {
         parent::__construct($id);
 
+        $this->name = $name;
         $this->setItems($items);
         $this->setCoins($coins);
 
-        $this->record(VendingMachineCreatedEvent::create($id, $items, $coins));
+        $this->record(VendingMachineCreatedEvent::create($id, $name, $items, $coins));
     }
 
-    public static function create(VendingMachineId $id, ItemCollection $items, CoinCollection $coins): self
-    {
-        return new self($id, $items, $coins);
+    public static function create(
+        VendingMachineId $id,
+        StringValueObject $name,
+        ItemCollection $items,
+        CoinCollection $coins
+    ): self {
+        return new self($id, $name, $items, $coins);
     }
 
     private function setItems(ItemCollection $items): void
@@ -49,44 +61,38 @@ class VendingMachine extends AggregateRoot
         $this->coins = $coins;
     }
 
+    public function name(): StringValueObject
+    {
+        return $this->name;
+    }
+
     public function items(): ItemCollection
     {
-        return $this->items;
+        return ItemCollection::cloneIndexed($this->items);
     }
 
     public function coins(): CoinCollection
     {
-        return $this->coins;
+        return CoinCollection::cloneIndexed($this->coins);
     }
 
-    public function insertItem(StringValueObject $name, ItemPrice $price, IntValueObject $stock): void
+    public function addItem(StringValueObject $name, ItemPrice $price, IntValueObject $stock): void
     {
         $itemsByName = $this->items->filterByName($name);
 
         if ($itemsByName->isEmpty()) {
-            $this->addItem(Item::create(ItemId::generate(), $name, $price, $stock));
+            $item = Item::create(ItemId::generate(), $name, $price, $stock);
+            $item->setVendingMachine($this);
+            $this->items->add($item);
         } else {
             $itemsByName->firstOrFail()->update($price, $stock);
         }
     }
 
-    private function addItem(Item $item): void
-    {
-        $item->setVendingMachine($this);
-
-        $this->items->add($item);
-    }
-
     public function insertCoin(Coin $coin): void
     {
         $coin->insert();
-        $this->addCoin($coin);
-    }
-
-    private function addCoin(Coin $coin): void
-    {
         $coin->setVendingMachine($this);
-
         $this->coins->add($coin);
     }
 

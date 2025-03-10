@@ -98,4 +98,15 @@ abstract class TypedCollection extends Collection
             ? $this->customExceptionFn($customException)
             : $this->defaultGetElementExceptionFn($action);
     }
+
+    public static function cloneIndexed(iterable $collection, callable $indexBy = null): static
+    {
+        $clonedCollection = static::createEmpty();
+
+        foreach ($collection as $item) {
+            $clonedCollection->set($indexBy ? $indexBy($item) : static::indexBy()($item), $item);
+        }
+
+        return $clonedCollection;
+    }
 }

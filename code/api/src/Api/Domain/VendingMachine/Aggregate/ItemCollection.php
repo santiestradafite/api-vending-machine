@@ -10,6 +10,7 @@ use Throwable;
 
 /**
  * @method Item firstOrFail(Throwable $customException = null)
+ * @method Item[] getIterator()
  */
 final class ItemCollection extends TypedCollection
 {
@@ -26,5 +27,10 @@ final class ItemCollection extends TypedCollection
     public function filterVended(): self
     {
         return $this->filter(static fn (Item $item) => $item->isVended()->isTrue());
+    }
+
+    public static function indexBy(): callable
+    {
+        return static fn (Item $item) => $item->id()->value();
     }
 }

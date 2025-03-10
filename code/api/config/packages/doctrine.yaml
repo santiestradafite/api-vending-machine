@@ -6,7 +6,6 @@ doctrine:
             uuid_binary: Shared\Infrastructure\Persistence\Doctrine\MySQL\Type\DoctrineUuidType
             string_value_object: Shared\Infrastructure\Persistence\Doctrine\MySQL\Type\DoctrineStringValueObjectType
             int_value_object: Shared\Infrastructure\Persistence\Doctrine\MySQL\Type\DoctrineIntValueObjectType
-            float_value_object: Shared\Infrastructure\Persistence\Doctrine\MySQL\Type\DoctrineFloatValueObjectType
             bool_value_object: Shared\Infrastructure\Persistence\Doctrine\MySQL\Type\DoctrineBoolValueObjectType
 
             vending_machine_id: Api\Infrastructure\Persistence\Doctrine\MySQL\Type\DoctrineVendingMachineIdType
@@ -15,6 +14,7 @@ doctrine:
 
     orm:
         auto_generate_proxy_classes: true
+        enable_lazy_ghost_objects: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         mappings:
             VendingMachine:

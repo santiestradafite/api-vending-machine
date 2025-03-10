@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Shared\Infrastructure\Persistence;
+namespace Tests\Api\Infrastructure\Persistence;
 
 use Doctrine\ORM\EntityNotFoundException;
 use Shared\Common\Collection;
@@ -72,11 +72,6 @@ abstract class InMemoryRepository
     protected function deepClone($object)
     {
         return unserialize(serialize($object));
-    }
-
-    public function doRemove(AggregateRoot $aggregateRoot): void
-    {
-        $this->elements->remove($aggregateRoot->id()->value());
     }
 
     protected function nullResult()

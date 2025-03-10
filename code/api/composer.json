@@ -39,7 +39,8 @@
     "autoload": {
         "psr-4": {
             "Api\\": "src/Api/",
-            "Shared\\": "src/Shared/"
+            "Shared\\": "src/Shared/",
+            "App\\": "src/"
         }
     },
     "autoload-dev": {

@@ -6,6 +6,6 @@
     https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
 
     <embeddable name="Api\Domain\VendingMachine\Aggregate\CoinValue">
-        <field name="value" type="float_value_object" column="value" />
+        <field name="value" type="float" column="value" />
     </embeddable>
 </doctrine-mapping>

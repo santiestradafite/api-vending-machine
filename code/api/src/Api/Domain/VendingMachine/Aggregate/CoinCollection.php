@@ -32,4 +32,9 @@ final class CoinCollection extends TypedCollection
     {
         return $this->filter(static fn (Coin $coin) => $coin->isReturned()->isTrue());
     }
+
+    public static function indexBy(): callable
+    {
+        return static fn (Coin $coin) => $coin->id()->value();
+    }
 }

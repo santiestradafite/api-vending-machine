@@ -24,14 +24,16 @@ final class VendingMachineTest extends TestCase
     public function test_it_can_create_a_vending_machine(): void
     {
         $id = StubVendingMachineId::create();
+        $name = new StringValueObject(StubVendingMachine::DEFAULT_NAME);
         $items = ItemCollection::create([StubItem::create()]);
         $coins = CoinCollection::create([StubCoin::create()]);
 
-        $sut = VendingMachine::create($id, $items, $coins);
+        $sut = VendingMachine::create($id, $name, $items, $coins);
 
         self::assertEquals($id, $sut->id());
-        self::assertEquals($items, $sut->items());
-        self::assertEquals($coins, $sut->coins());
+        self::assertEquals($name, $sut->name());
+        self::assertEquals(ItemCollection::cloneIndexed($items), $sut->items());
+        self::assertEquals(CoinCollection::cloneIndexed($coins), $sut->coins());
         self::assertEmpty($sut->insertedCoins());
         self::assertEmpty($sut->returnedCoins());
         self::assertNull($sut->vendedItem());
@@ -53,7 +55,7 @@ final class VendingMachineTest extends TestCase
         $price = ItemPrice::create(StubItem::DEFAULT_PRICE);
         $stock = new IntValueObject(StubItem::DEFAULT_STOCK);
 
-        $sut->insertItem($name, $price, $stock);
+        $sut->addItem($name, $price, $stock);
 
         self::assertCount(1, $sut->items());
         $itemAdded = $sut->items()->firstOrFail();
@@ -70,7 +72,7 @@ final class VendingMachineTest extends TestCase
         $price = ItemPrice::create(0.25);
         $stock = new IntValueObject(1);
 
-        $sut->insertItem($name, $price, $stock);
+        $sut->addItem($name, $price, $stock);
 
         self::assertCount(1, $sut->items());
         $itemAdded = $sut->items()->firstOrFail();

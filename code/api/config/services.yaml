@@ -45,10 +45,4 @@ services:
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onException }
 
-
-
-
-
-
-
-
+    test.Doctrine\Persistence\ManagerRegistry: '@Doctrine\Persistence\ManagerRegistry'
