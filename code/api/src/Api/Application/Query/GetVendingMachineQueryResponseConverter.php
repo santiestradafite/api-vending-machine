@@ -17,6 +17,7 @@ final class GetVendingMachineQueryResponseConverter
             [
                 'vendingMachine' => [
                     'id' => $vendingMachine->id()->value(),
+                    'name' => $vendingMachine->name()->value(),
                     'vended_item' => $this->convertVendedItem($vendingMachine->vendedItem()),
                     'returned_coins' => $vendingMachine->returnedCoins()->reduce($this->convertReturnedCoin(), []),
                     'items' => $vendingMachine->items()->reduce($this->convertItem(), []),

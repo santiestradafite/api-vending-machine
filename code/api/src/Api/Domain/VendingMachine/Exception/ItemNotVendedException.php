@@ -11,14 +11,14 @@ use Shared\Domain\FloatValueObject;
 
 final class ItemNotVendedException extends Exception
 {
-    public static function becauseVendedItemIsNotCollected(): self
-    {
-        return self::create('Please, collect the vended item first');
-    }
-
     public static function becauseItemIsNotFound(ItemId $itemId): self
     {
         return self::create(sprintf('Item with id <%s> is not in the vending machine', $itemId->value()));
+    }
+
+    public static function becauseVendedItemIsNotCollected(): self
+    {
+        return self::create('Please, collect the vended item first');
     }
 
     public static function becauseItemHasNoStock(ItemId $itemId): self
@@ -30,7 +30,7 @@ final class ItemNotVendedException extends Exception
     {
         return self::create(
             sprintf(
-                'Item with id <%s> can not be vended because the money introduced is not enough. Item price: <%s>. Introduced money: <%s>.',
+                'Item with id <%s> can not be vended because the inserted money is not enough. Item price: <%s>. Inserted money: <%s>.',
                 $item->id()->value(),
                 $item->price()->value(),
                 $insertedMoney->value()

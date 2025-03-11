@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Api\Infrastructure\Ui\Http\Controller;
 
-use Api\Application\Command\InsertCoinCommand;
 use Api\Application\Command\VendItemCommand;
 use Shared\Domain\Command\CommandBus;
 use Symfony\Component\HttpFoundation\JsonResponse;

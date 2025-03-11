@@ -2,15 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Api\Application\Command;
+namespace Tests\Api\Application\Command;
 
-use Api\Application\Command\SetupVendingMachineCommand;
-use Api\Application\Command\SetupVendingMachineCommandHandler;
+use Api\Application\Command\VendItemCommand;
+use Api\Application\Command\VendItemCommandHandler;
 use Api\Domain\VendingMachine\Aggregate\CoinValue;
 use Api\Domain\VendingMachine\Aggregate\Item;
 use Api\Domain\VendingMachine\Aggregate\ItemCollection;
 use Api\Domain\VendingMachine\Aggregate\ItemPrice;
-use Api\Domain\VendingMachine\Exception\ItemNotVendedException;
 use Api\Domain\VendingMachine\Repository\VendingMachineRepositoryInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use PHPUnit\Framework\TestCase;

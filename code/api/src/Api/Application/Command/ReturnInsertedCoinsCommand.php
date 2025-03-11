@@ -6,7 +6,7 @@ namespace Api\Application\Command;
 
 use Shared\Domain\Command\Command;
 
-final class ReturnInsertedCoinCommand implements Command
+final class ReturnInsertedCoinsCommand implements Command
 {
     public function __construct(private readonly string $vendingMachineId)
     {

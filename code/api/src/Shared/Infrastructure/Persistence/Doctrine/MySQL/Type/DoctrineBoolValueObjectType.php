@@ -15,14 +15,14 @@ final class DoctrineBoolValueObjectType extends JsonType
         return $platform->getBooleanTypeDeclarationSQL($column);
     }
 
-    public function convertToDatabaseValue($boolValueObject, AbstractPlatform $platform): ?int
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?int
     {
-        /** @var BoolValueObject $boolValueObject */
-        if ($boolValueObject === null) {
+        /** @var BoolValueObject $value */
+        if ($value === null) {
             return null;
         }
 
-        return $boolValueObject->toNumber();
+        return $value->toNumber();
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform): ?BoolValueObject

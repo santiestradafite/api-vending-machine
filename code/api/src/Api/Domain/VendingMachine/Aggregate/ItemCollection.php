@@ -5,12 +5,11 @@ declare(strict_types=1);
 namespace Api\Domain\VendingMachine\Aggregate;
 
 use Shared\Common\TypedCollection;
-use Shared\Domain\StringValueObject;
 use Throwable;
 
 /**
  * @method Item firstOrFail(Throwable $customException = null)
- * @method Item[] getIterator()
+ * @method Item|null get(string $key)
  */
 final class ItemCollection extends TypedCollection
 {

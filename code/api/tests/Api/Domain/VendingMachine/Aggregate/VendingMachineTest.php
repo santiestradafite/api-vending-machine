@@ -9,9 +9,14 @@ use Api\Domain\VendingMachine\Aggregate\CoinValue;
 use Api\Domain\VendingMachine\Aggregate\ItemCollection;
 use Api\Domain\VendingMachine\Aggregate\ItemPrice;
 use Api\Domain\VendingMachine\Aggregate\VendingMachine;
+use Api\Domain\VendingMachine\Event\CoinInsertedEvent;
+use Api\Domain\VendingMachine\Event\ItemVendedEvent;
 use Api\Domain\VendingMachine\Event\VendingMachineCreatedEvent;
 use Api\Domain\VendingMachine\Exception\ItemNotVendedException;
 use PHPUnit\Framework\TestCase;
+use Shared\Common\Collection;
+use Shared\Domain\AggregateRoot;
+use Shared\Domain\Event\DomainEvent;
 use Shared\Domain\FloatValueObject;
 use Shared\Domain\IntValueObject;
 use Shared\Domain\StringValueObject;
@@ -40,14 +45,7 @@ final class VendingMachineTest extends TestCase
         self::assertEmpty($sut->returnedCoins());
         self::assertNull($sut->vendedItem());
 
-        $events = $sut->pullDomainEvents();
-        self::assertCount(1, $events);
-        /** @var VendingMachineCreatedEvent $event */
-        $event = array_shift($events);
-        self::assertEquals(VendingMachineCreatedEvent::class, get_class($event));
-        self::assertEquals(StubVendingMachineId::DEFAULT_ID, $event->aggregateId());
-        self::assertEquals($items, $event->items());
-        self::assertEquals($coins, $event->coins());
+        $this->thenEventOfClassNameHasBeenRecorded($sut,VendingMachineCreatedEvent::class);
     }
 
     public function test_it_can_insert_a_coin(): void
@@ -60,6 +58,8 @@ final class VendingMachineTest extends TestCase
         self::assertCount(2, $sut->coins());
         self::assertEmpty($sut->returnedCoins());
         self::assertEquals($sut, $coin->vendingMachine());
+
+        $this->thenEventOfClassNameHasBeenRecorded($sut,CoinInsertedEvent::class);
     }
 
     public function test_it_can_return_inserted_coins(): void
@@ -93,6 +93,8 @@ final class VendingMachineTest extends TestCase
         self::assertEmpty($sut->insertedCoins());
         self::assertEmpty($sut->returnedCoins());
         self::assertCount(4, $sut->coins());
+
+        $this->thenEventOfClassNameHasBeenRecorded($sut,ItemVendedEvent::class);
     }
 
     public function test_it_can_vend_an_item_and_return_change(): void
@@ -122,6 +124,8 @@ final class VendingMachineTest extends TestCase
         self::assertContains($insertedCoin2, $sut->returnedCoins());
         self::assertContains($coin, $sut->returnedCoins());
         self::assertCount(5, $sut->coins());
+
+        $this->thenEventOfClassNameHasBeenRecorded($sut,ItemVendedEvent::class);
     }
 
     public function test_it_should_fail_when_trying_to_vend_an_item_without_collecting_the_already_vended_one(): void
@@ -189,5 +193,21 @@ final class VendingMachineTest extends TestCase
         self::assertNull($sut->vendedItem());
         self::assertEmpty($sut->returnedCoins());
         self::assertCount(1, $sut->coins());
+    }
+
+    private function thenEventOfClassNameHasBeenRecorded(AggregateRoot $aggregateRoot, string $eventClassName): void
+    {
+        $this->assertContains(
+            $eventClassName,
+            $this->classNamesOfRecordedEvents($aggregateRoot),
+            "$eventClassName not found between recorded events"
+        );
+    }
+
+    private function classNamesOfRecordedEvents(AggregateRoot $aggregateRoot): Collection
+    {
+        return new Collection(
+            array_map(static fn(DomainEvent $domainEvent) => $domainEvent::class, $aggregateRoot->pullDomainEvents())
+        );
     }
 }

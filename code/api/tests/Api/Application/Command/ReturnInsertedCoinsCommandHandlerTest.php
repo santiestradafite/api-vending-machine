@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Api\Application\Command;
+namespace Tests\Api\Application\Command;
 
+use Api\Application\Command\ReturnInsertedCoinsCommand;
+use Api\Application\Command\ReturnInsertedCoinsCommandHandler;
 use Api\Domain\VendingMachine\Repository\VendingMachineRepositoryInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use PHPUnit\Framework\TestCase;
@@ -27,7 +29,7 @@ final class ReturnInsertedCoinsCommandHandlerTest extends TestCase
     {
         $this->givenAVendingMachineWithInsertedCoins();
 
-        $this->sut->__invoke(new ReturnInsertedCoinCommand(StubVendingMachineId::DEFAULT_ID));
+        $this->sut->__invoke(new ReturnInsertedCoinsCommand(StubVendingMachineId::DEFAULT_ID));
 
         $vendingMachine = $this->vendingMachineRepository->findOrFail(StubVendingMachineId::create());
 
@@ -46,6 +48,6 @@ final class ReturnInsertedCoinsCommandHandlerTest extends TestCase
     {
         $this->expectException(EntityNotFoundException::class);
 
-        $this->sut->__invoke(new ReturnInsertedCoinCommand(StubVendingMachineId::DEFAULT_ID));
+        $this->sut->__invoke(new ReturnInsertedCoinsCommand(StubVendingMachineId::DEFAULT_ID));
     }
 }

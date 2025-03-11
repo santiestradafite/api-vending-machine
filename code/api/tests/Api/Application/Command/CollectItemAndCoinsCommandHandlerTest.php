@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Api\Application\Command;
+namespace Tests\Api\Application\Command;
 
+use Api\Application\Command\CollectItemAndCoinsCommand;
+use Api\Application\Command\CollectItemAndCoinsCommandHandler;
 use Api\Domain\VendingMachine\Aggregate\CoinValue;
 use Api\Domain\VendingMachine\Aggregate\ItemCollection;
 use Api\Domain\VendingMachine\Aggregate\ItemPrice;

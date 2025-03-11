@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace Api\Infrastructure\Ui\Http\Controller;
 
-use Api\Application\Command\InsertCoinCommand;
-use Api\Application\Command\ReturnInsertedCoinCommand;
+use Api\Application\Command\ReturnInsertedCoinsCommand;
 use Shared\Domain\Command\CommandBus;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +20,7 @@ final class ReturnInsertedCoinsController
     {
         $vendingMachineId = $request->get('vendingMachineId');
 
-        $this->commandBus->dispatch(new ReturnInsertedCoinCommand($vendingMachineId));
+        $this->commandBus->dispatch(new ReturnInsertedCoinsCommand($vendingMachineId));
 
         return new JsonResponse([], Response::HTTP_OK);
     }

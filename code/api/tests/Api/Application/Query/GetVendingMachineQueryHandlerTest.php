@@ -40,7 +40,7 @@ final class GetVendingMachineQueryHandlerTest extends TestCase
 
     public function test_it_returns_expected_vending_machine_data(): void
     {
-        $this->givenAVendingMachineWithAVendedItemAndReturnedCoins();
+        $this->givenAVendingMachine(true);
 
         $result = $this->sut->__invoke(new GetVendingMachineQuery(StubVendingMachineId::DEFAULT_ID));
 
@@ -48,6 +48,7 @@ final class GetVendingMachineQueryHandlerTest extends TestCase
             [
                 'vendingMachine' => [
                     'id' => StubVendingMachineId::DEFAULT_ID,
+                    'name' => StubVendingMachine::DEFAULT_NAME,
                     'vended_item' => [
                         'id' => StubItemId::DEFAULT_ID,
                         'name' => StubItem::DEFAULT_NAME,
@@ -96,14 +97,7 @@ final class GetVendingMachineQueryHandlerTest extends TestCase
         );
     }
 
-    public function test_it_fails_when_vending_machine_is_not_found(): void
-    {
-        $this->expectException(EntityNotFoundException::class);
-
-        $this->sut->__invoke(new GetVendingMachineQuery(StubVendingMachineId::DEFAULT_ID));
-    }
-
-    private function givenAVendingMachineWithAVendedItemAndReturnedCoins(): void
+    private function givenAVendingMachine(bool $withVendedItemAndReturnedCoins): void
     {
         $items = ItemCollection::create([
             StubItem::create(
@@ -123,9 +117,62 @@ final class GetVendingMachineQueryHandlerTest extends TestCase
         $coins = CoinCollection::create([StubCoin::create(value: CoinValue::create(0.05))]);
 
         $vendingMachine = StubVendingMachine::create(items: $items, coins: $coins);
-        $vendingMachine->insertCoin(StubCoin::create(StubCoinId::createOther(), CoinValue::create(0.10)));
-        $vendingMachine->vendItem(StubItemId::create());
+
+        if ($withVendedItemAndReturnedCoins) {
+            $vendingMachine->insertCoin(StubCoin::create(StubCoinId::createOther(), CoinValue::create(0.10)));
+            $vendingMachine->vendItem(StubItemId::create());
+        }
 
         $this->vendingMachineRepository->save($vendingMachine);
+    }
+
+    public function test_it_returns_expected_vending_machine_data_without_vended_item_and_returned_coins(): void
+    {
+        $this->givenAVendingMachine(false);
+
+        $result = $this->sut->__invoke(new GetVendingMachineQuery(StubVendingMachineId::DEFAULT_ID));
+
+        self::assertEquals(
+            [
+                'vendingMachine' => [
+                    'id' => StubVendingMachineId::DEFAULT_ID,
+                    'name' => StubVendingMachine::DEFAULT_NAME,
+                    'vended_item' => null,
+                    'returned_coins' => [],
+                    'items' => [
+                        [
+                            'id' => StubItemId::DEFAULT_ID,
+                            'name' => StubItem::DEFAULT_NAME,
+                            'price' => 0.05,
+                            'stock' => 10,
+                            'is_vended' => false
+                        ],
+                        [
+                            'id' => StubItemId::OTHER_ID,
+                            'name' => 'Juice',
+                            'price' => 1,
+                            'stock' => 5,
+                            'is_vended' => false
+                        ]
+                    ],
+                    'coins' => [
+                        [
+                            'id' => StubCoinId::DEFAULT_ID,
+                            'value' => 0.05,
+                            'is_inserted' => false,
+                            'is_returned' => false
+                        ]
+                    ]
+                ]
+            ],
+            $result->result()
+        );
+    }
+
+    public function test_it_fails_when_vending_machine_is_not_found(): void
+    {
+        $this->expectException(EntityNotFoundException::class);
+
+        $this->sut->__invoke(new GetVendingMachineQuery(StubVendingMachineId::DEFAULT_ID));
     }
 }

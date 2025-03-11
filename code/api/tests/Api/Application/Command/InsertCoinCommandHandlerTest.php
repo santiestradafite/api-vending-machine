@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Api\Application\Command;
+namespace Tests\Api\Application\Command;
 
-use Api\Application\Command\SetupVendingMachineCommand;
-use Api\Application\Command\SetupVendingMachineCommandHandler;
-use Api\Domain\VendingMachine\Exception\ItemNotVendedException;
+use Api\Application\Command\InsertCoinCommand;
+use Api\Application\Command\InsertCoinCommandHandler;
 use Api\Domain\VendingMachine\Repository\VendingMachineRepositoryInterface;
 use Doctrine\ORM\EntityNotFoundException;
 use PHPUnit\Framework\TestCase;

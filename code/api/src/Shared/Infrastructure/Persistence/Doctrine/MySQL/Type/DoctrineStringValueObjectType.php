@@ -15,13 +15,14 @@ final class DoctrineStringValueObjectType extends JsonType
         return $platform->getStringTypeDeclarationSQL($column);
     }
 
-    public function convertToDatabaseValue($stringValueObject, AbstractPlatform $platform): ?string
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
-        if ($stringValueObject === null) {
+        /** @var StringValueObject $value */
+        if ($value === null) {
             return null;
         }
 
-        return $stringValueObject->value();
+        return $value->value();
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform): ?StringValueObject

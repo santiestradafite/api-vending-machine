@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Api\Domain\VendingMachine\Aggregate;
 
+use Api\Domain\VendingMachine\Event\CoinInsertedEvent;
+use Api\Domain\VendingMachine\Event\ItemVendedEvent;
 use Api\Domain\VendingMachine\Event\VendingMachineCreatedEvent;
 use Api\Domain\VendingMachine\Exception\ItemNotVendedException;
 use Closure;
 use Shared\Domain\AggregateRoot;
 use Shared\Domain\FloatValueObject;
-use Shared\Domain\IntValueObject;
 use Shared\Domain\StringValueObject;
 
 /**
@@ -81,26 +82,35 @@ class VendingMachine extends AggregateRoot
         $coin->insert();
         $coin->setVendingMachine($this);
         $this->coins->add($coin);
+
+        $this->record(CoinInsertedEvent::create($coin->id(), $this->id(), $coin->value()));
     }
 
     public function vendItem(ItemId $itemId): void
     {
         $item = $this->items()->get($itemId->value());
 
-        $this->assertItemCanBeVended($item, $itemId);
+        if (null === $item) {
+            throw ItemNotVendedException::becauseItemIsNotFound($itemId);
+        }
+
+        $this->assertItemCanBeVended($item);
         $item->vend();
         $this->returnChange($item);
         $this->collectInsertedCoins();
+
+        $this->record(ItemVendedEvent::create($item->id(), $this->id(), $item->name(), $item->price(), $item->stock()));
     }
 
-    private function collectInsertedCoins(): void
+    private function assertItemCanBeVended(Item $item): void
     {
-        $this->insertedCoins()->each(fn (Coin $coin) => $coin->collect());
-    }
+        if (null !== $this->vendedItem()) {
+            throw ItemNotVendedException::becauseVendedItemIsNotCollected();
+        }
 
-    public function insertedCoins(): CoinCollection
-    {
-        return $this->coins()->filterInserted();
+        if ($item->price()->isGreaterThan($this->insertedMoney())) {
+            throw ItemNotVendedException::becauseInsertedMoneyIsNotEnough($item, $this->insertedMoney());
+        }
     }
 
     private function returnChange(Item $item): void
@@ -126,6 +136,11 @@ class VendingMachine extends AggregateRoot
         );
     }
 
+    public function insertedCoins(): CoinCollection
+    {
+        return $this->coins()->filterInserted();
+    }
+
     private function calculateChangeFn(FloatValueObject &$neededChange): Closure
     {
         return static function (Coin $coin) use (&$neededChange) {
@@ -134,6 +149,11 @@ class VendingMachine extends AggregateRoot
                 $coin->return();
             }
         };
+    }
+
+    private function collectInsertedCoins(): void
+    {
+        $this->insertedCoins()->each(fn (Coin $coin) => $coin->collect());
     }
 
     public function returnInsertedCoins(): void
@@ -155,20 +175,5 @@ class VendingMachine extends AggregateRoot
     public function returnedCoins(): CoinCollection
     {
         return $this->coins()->filterReturned();
-    }
-
-    private function assertItemCanBeVended(?Item $item, ItemId $itemId): void
-    {
-        if (null !== $this->vendedItem()) {
-            throw ItemNotVendedException::becauseVendedItemIsNotCollected();
-        }
-
-        if (null === $item) {
-            throw ItemNotVendedException::becauseItemIsNotFound($itemId);
-        }
-
-        if ($item->price()->isGreaterThan($this->insertedMoney())) {
-            throw ItemNotVendedException::becauseInsertedMoneyIsNotEnough($item, $this->insertedMoney());
-        }
     }
 }

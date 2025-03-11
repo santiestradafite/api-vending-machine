@@ -14,7 +14,7 @@ final class ReturnInsertedCoinsCommandHandler implements CommandHandler
     {
     }
 
-    public function __invoke(ReturnInsertedCoinCommand $command): void
+    public function __invoke(ReturnInsertedCoinsCommand $command): void
     {
         $vendingMachine = $this->vendingMachineRepository->findOrFail(VendingMachineId::fromString($command->vendingMachineId()));
 
