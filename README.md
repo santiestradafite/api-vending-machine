@@ -53,6 +53,6 @@ where vending_machine_id = uuid_to_bin('{{your_vending_machine_uuid}}');
             All items. If there's any vended item, it will also be here with the field is_vended = true,
             but I wanted to return it separately on vended_item as well to make it more visible.
         - Coins:
-            All coins. If there's any returned coin, it will also be here with the field is_returned = truem
+            All coins. If there's any returned coin, it will also be here with the field is_returned = true
             but I also wanted to return them separately on returned_coins to make them more visible.
-            Each con also has a field is_inserted to keep track of them before vending an item.
+            Each coin also has a field is_inserted to keep track of them before vending an item.
